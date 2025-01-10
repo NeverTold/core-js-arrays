@@ -39,7 +39,10 @@ function getIntervalArray(start, end) {
  */
 function sumArrays(arr1, arr2) {
   if (arr1.length >= arr2.length) {
-    return Array.from(arr1, (v, i) => v + arr2[i]);
+    return Array.from(
+      arr1,
+      (v, i) => v + (arr2[i] === undefined ? 0 : arr2[i])
+    );
   }
   if (arr1.length <= arr2.length) {
     return Array.from(
@@ -288,8 +291,13 @@ function distinct(arr) {
  *    createNDimensionalArray(4, 2) => [[[[0, 0], [0, 0]], [[0, 0], [0, 0]]], [[[0, 0], [0, 0]], [[0, 0], [0, 0]]]]
  *    createNDimensionalArray(1, 1) => [0]
  */
-function createNDimensionalArray(/* n, size */) {
-  throw new Error('Not implemented');
+function createNDimensionalArray(n, size) {
+  if (n === 1) {
+    return Array(size).fill(0);
+  }
+  return Array(size)
+    .fill()
+    .map(() => createNDimensionalArray(n - 1, size));
 }
 
 /**
@@ -337,8 +345,10 @@ function selectMany(arr, childrenSelector) {
  *   calculateBalance([ [ 10, 8 ], [ 1, 5 ] ])  => (10 - 8) + (1 - 5) = 2 + -4 = -2
  *   calculateBalance([]) => 0
  */
-function calculateBalance(/* arr */) {
-  throw new Error('Not implemented');
+function calculateBalance(arr) {
+  return arr.reduce((totalBalance, [income, expense]) => {
+    return totalBalance + (income - expense);
+  }, 0);
 }
 
 /**
@@ -353,8 +363,12 @@ function calculateBalance(/* arr */) {
  *    createChunks(['a', 'b', 'c', 'd', 'e'], 2) => [['a', 'b'], ['c', 'd'], ['e']]
  *    createChunks([10, 20, 30, 40, 50], 1) => [[10], [20], [30], [40], [50]]
  */
-function createChunks(/* arr, chunkSize */) {
-  throw new Error('Not implemented');
+function createChunks(arr, chunkSize, chunks = []) {
+  if (arr.length === 0) {
+    return chunks;
+  }
+  chunks.push(arr.slice(0, chunkSize));
+  return createChunks(arr.slice(chunkSize), chunkSize, chunks);
 }
 
 /**
@@ -369,8 +383,9 @@ function createChunks(/* arr, chunkSize */) {
  *    generateOdds(2) => [ 1, 3 ]
  *    generateOdds(5) => [ 1, 3, 5, 7, 9 ]
  */
-function generateOdds(/* len */) {
-  throw new Error('Not implemented');
+function generateOdds(len) {
+  const arr = Array.from({ length: len * 2 }, (v, i) => i);
+  return arr.filter((val) => val % 2 !== 0);
 }
 
 /**
@@ -385,8 +400,11 @@ function generateOdds(/* len */) {
  *   getElementByIndices(['one','two','three'], [2]) => 'three'  (arr[2])
  *   getElementByIndices([[[ 1, 2, 3]]], [ 0, 0, 1 ]) => 2        (arr[0][0][1])
  */
-function getElementByIndices(/* arr, indices */) {
-  throw new Error('Not implemented');
+function getElementByIndices(arr, indices) {
+  if (indices.length === 1) {
+    return arr[indices[0]];
+  }
+  return getElementByIndices(arr[indices.shift()], indices);
 }
 
 /**
@@ -401,8 +419,16 @@ function getElementByIndices(/* arr, indices */) {
  *  getFalsyValuesCount([ -1, 'false', null, 0 ]) => 2
  *  getFalsyValuesCount([ null, undefined, NaN, false, 0, '' ]) => 6
  */
-function getFalsyValuesCount(/* arr */) {
-  throw new Error('Not implemented');
+function getFalsyValuesCount(arr) {
+  let result = 0;
+  arr.map((val) => {
+    if (!!val === false) {
+      result += 1;
+      return val;
+    }
+    return val;
+  });
+  return result;
 }
 
 /**
@@ -423,8 +449,20 @@ function getFalsyValuesCount(/* arr */) {
  *                              [0,0,0,1,0],
  *                              [0,0,0,0,1]]
  */
-function getIdentityMatrix(/* n */) {
-  throw new Error('Not implemented');
+function getIdentityMatrix(n) {
+  const array = Array(n)
+    .fill()
+    .map(() => Array(n).fill(0));
+  let index = 0;
+
+  array.map((element, ind) => {
+    if (ind === index) {
+      array[index][index] = 1;
+      index += 1;
+    }
+    return element;
+  });
+  return array;
 }
 
 /**
